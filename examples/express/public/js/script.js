@@ -18,7 +18,7 @@ $(document).ready(function(){
 
   $('#data').on('click', 'tbody tr', function(){
     showLoading();
-    $('#data').empty()
+
 
     var viewType = $('#data').data('view-type');
     if(viewType == 'agencies') {
@@ -32,6 +32,7 @@ $(document).ready(function(){
     } else if(viewType == 'routesNearby') {
       getStops.call(this);
     }
+      $('#data').empty()
   });
 
   $('#nav-button').on('click', function(){
@@ -179,7 +180,7 @@ function getRoutes(){
   var agency_key = $(this).data('agency-key');
 
   $('#data').data('view-type', 'routes');
-
+    console.log($(this).data);
   $('#pageTitle').html('Routes for ' + agencies[agency_key].agency_name);
 
   $('#map').hide();
@@ -201,8 +202,9 @@ function getRoutes(){
 }
 
 function getStops(){
-  var agency_key = $(this).data('agency-key')
-    , route_id = $(this).data('route-id')
+  var agency_key = $(this).data('agency-key');
+    console.log(agency_key);
+    var route_id = $(this).data('route-id')
     , route = agencies[agency_key].routes[route_id]
     , routeTitle;
 

@@ -9,6 +9,7 @@ var request = require('request')
   , Db = require('mongodb').Db
   , q;
 
+
 //load config.js
 try {
   var config = require('../config.js');
@@ -78,10 +79,10 @@ if(!config.agencies){
 }
 
 //open database and create queue for agency list
-Db.connect(config.mongo_url, {w: 1}, function(err, db) { 
+Db.connect(config.mongo_url, {w: 1}, function(err, db) {
   q = async.queue(downloadGTFS, 1);
   //loop through all agencies specified
-  //If the agency_key is a URL, download that GTFS file, otherwise treat 
+  //If the agency_key is a URL, download that GTFS file, otherwise treat
   //it as an agency_key and get file from gtfs-data-exchange.com
   config.agencies.forEach(function(item) {
     if(typeof(item) == 'string') {
@@ -146,16 +147,18 @@ Db.connect(config.mongo_url, {w: 1}, function(err, db) {
         }
   		});
     }
-    
+
 
     function downloadFiles(cb) {
       //do download
       request(agency_url, processFile).pipe(fs.createWriteStream(downloadDir + '/latest.zip'));
 
       function processFile(e, response, body){
+         // console.log(response);
         if(response && response.statusCode != 200){ cb(new Error('Couldn\'t download files')); }
         console.log(agency_key + ': Download successful');
-  	
+
+
         fs.createReadStream(downloadDir + '/latest.zip')
           .pipe(unzip.Extract({ path: downloadDir }).on('close', cb))
           .on('error', handleError);
@@ -176,6 +179,8 @@ Db.connect(config.mongo_url, {w: 1}, function(err, db) {
 
 
     function importFiles(cb) {
+        // GTFS 2 MongoDB
+        console.log("Importing Files");
       //Loop through each file and add agency_key
       async.forEachSeries(GTFSFiles, function(GTFSFile, cb){
         if(GTFSFile){
@@ -192,7 +197,7 @@ Db.connect(config.mongo_url, {w: 1}, function(err, db) {
                     delete line[key];
                   }
                 }
-                
+
                 //add agency_key
                 line.agency_key = agency_key;
 
@@ -210,7 +215,7 @@ Db.connect(config.mongo_url, {w: 1}, function(err, db) {
                 //make lat/lon array for stops
                 if(line.stop_lat && line.stop_lon){
                   line.loc = [parseFloat(line.stop_lon), parseFloat(line.stop_lat)];
-                  
+
                   //Calulate agency bounds
                   if(agency_bounds.sw[0] > line.loc[0] || !agency_bounds.sw[0]){
                     agency_bounds.sw[0] = line.loc[0];

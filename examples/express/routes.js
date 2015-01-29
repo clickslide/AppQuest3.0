@@ -1,14 +1,14 @@
 var gtfs = require('../../');
 
 module.exports = function routes(app){
-  
+
   //AgencyList
   app.get('/api/agencies', function(req, res){
     gtfs.agencies(function(e, data){
       res.send( data || {error: 'No agencies in database'});
     });
   });
-   
+
   app.get('/api/agenciesNearby/:lat/:lon/:radiusInMiles', function(req, res){
     var lat = req.params.lat
       , lon = req.params.lon
@@ -33,7 +33,7 @@ module.exports = function routes(app){
       res.send( data || {error: 'No routes for agency_key ' + agency_key});
     });
   });
-  
+
   app.get('/api/routesNearby/:lat/:lon/:radiusInMiles', function(req, res){
     var lat = req.params.lat
       , lon = req.params.lon
@@ -66,7 +66,7 @@ module.exports = function routes(app){
       res.send( data || {error: 'No shapes for agency/route combination.'});
     });
   });
-  
+
   //Stoplist
   app.get('/api/stops/:agency/:route_id/:direction_id', function(req, res){
     var agency_key = req.params.agency
@@ -83,7 +83,7 @@ module.exports = function routes(app){
       res.send( data || {error: 'No stops for agency/route combination.'});
     });
   });
-  
+
   app.get('/api/stopsNearby/:lat/:lon/:radiusInMiles', function(req, res){
     var lat = req.params.lat
       , lon = req.params.lon
@@ -99,7 +99,7 @@ module.exports = function routes(app){
       res.send( data || {error: 'No stops within default radius'});
     });
   });
-  
+
   //Times
   app.get('/api/times/:agency/:route_id/:stop_id/:direction_id', function(req, res){
     var agency_key = req.params.agency
@@ -118,10 +118,11 @@ module.exports = function routes(app){
       res.send( data || {error: 'No times for agency/route/stop combination.'});
     });
   });
-    
+
+
   //Nothing specified
   app.all('*', function notFound(req, res) {
-    
+
     res.contentType('application/json');
     res.send({
       error: 'No API call specified'
