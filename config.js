@@ -1,5 +1,5 @@
 module.exports = {
-    mongo_url: process.env.MONGOHQ_URL || 'mongodb://localhost:27017/gtfs'
+    mongo_url: 'mongodb://datadipity:4gFFr4nc0@candidate.37.mongolayer.com:10192,candidate.36.mongolayer.com:10192/datadipity-v1-master'
   , agencies: [
       /* Put agency_key names from  gtfs-data-exchange.com.
       Optionally, specify a download URL to use a dataset not from gtfs-data-exchange.com */
